@@ -1,5 +1,5 @@
 async function getAllCountries() {
-    let res = await fetch('http://localhost:3000/country');
+    let res = await fetch('https://murmuring-plains-32160.herokuapp.com/country');
     return res.json();
 }
 

@@ -1,5 +1,5 @@
 async function login(email, password) {
-    let res = await fetch('http://localhost:3000/user/login', {
+    let res = await fetch('https://murmuring-plains-32160.herokuapp.com/user/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
