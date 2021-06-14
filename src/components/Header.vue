@@ -10,7 +10,10 @@
         <li><router-link to="/countries">Library</router-link></li>
         <li><router-link to="/wishes">Wishlist</router-link></li>
       </ul>
-      <el-button v-if="!user || !user._id" type="primary" class="btn" round @click="dialogVisible=true">Log in</el-button>
+      <template v-if="!user || !user._id">
+        <el-button type="primary" class="btn" round @click="dialogVisible=true">Log in</el-button>
+        <el-button type="primary" class="btn" round @click="signUpDialogVisible=true">Sign up</el-button>
+      </template>
       <el-dropdown v-else trigger="click">
         <span class="el-dropdown-link">
           {{ user.email }}<i class="el-icon-arrow-down el-icon--right"></i>
@@ -35,11 +38,26 @@
         <el-button class="btn" type="info" @click="dialogVisible = false">Close</el-button>
       </div>
     </el-dialog>
+    <el-dialog
+        class="login-dialog"
+        :visible.sync="signUpDialogVisible"
+        :show-close="false"
+        width="437px">
+      <div class="title">Sign up</div>
+      <div class="content">
+        <el-input v-model="signUpEmail" class="login-input" placeholder="Email"></el-input>
+        <el-input v-model="signUpPassword" type="password" class="login-input" placeholder="Password"></el-input>
+      </div>
+      <div class="actions">
+        <el-button class="btn" type="primary" @click="userSignUp">Sign Up</el-button>
+        <el-button class="btn" type="info" @click="signUpDialogVisible = false">Close</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import {getCurrentUser, login} from "@/services/user";
+import {getCurrentUser, login, signUp} from "@/services/user";
 
 export default {
   data() {
@@ -47,6 +65,9 @@ export default {
       email: '',
       password: '',
       dialogVisible: false,
+      signUpDialogVisible: false,
+      signUpEmail: '',
+      signUpPassword: '',
       user: {}
     };
   },
@@ -66,6 +87,28 @@ export default {
         this.password = '';
         this.user = result;
         localStorage.setItem('user', JSON.stringify(result));
+      } else {
+        this.$message({
+          message: 'invalid email or password',
+          type: 'error'
+        });
+      }
+    },
+    async userSignUp() {
+      const result = await signUp(this.signUpEmail, this.signUpPassword);
+      if (result === 201) {
+        this.$message({
+          message: 'signup successful!',
+          type: 'success'
+        });
+        this.signUpDialogVisible = false;
+        this.signUpEmail = '';
+        this.signUpPassword = '';
+      } else if (result === 409) {
+        this.$message({
+          message: 'email has been registered',
+          type: 'error'
+        });
       } else {
         this.$message({
           message: 'invalid email or password',

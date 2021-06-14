@@ -1,5 +1,5 @@
 async function login(email, password) {
-    let res = await fetch('https://murmuring-plains-32160.herokuapp.com/user/login', {
+    let res = await fetch('http://localhost:3000/user/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -12,6 +12,17 @@ async function login(email, password) {
     return null;
 }
 
+async function signUp(email, password) {
+    let res = await fetch('http://localhost:3000/user', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+    });
+    return res.status;
+}
+
 function getCurrentUser() {
     let user = localStorage.getItem('user');
     return user && JSON.parse(user);
@@ -19,5 +30,6 @@ function getCurrentUser() {
 
 export {
     login,
-    getCurrentUser
+    getCurrentUser,
+    signUp
 }
